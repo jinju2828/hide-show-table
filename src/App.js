@@ -1,67 +1,95 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
+// import ReactDOM from 'react-dom';
 
-class ParentComponent extends Component {
-  constructor() {
-    super();
+const list = [
+  {
+    name: "Person 1",
+    phone: "123-4567",
+    id: 11,
+    hidden:true
+  },
+  {
+    name: "Person 2",
+    phone: "123-4567",
+    id: 12,
+    hidden:true
+  },
+  {
+    name: "Person 3",
+    phone: "123-4567",
+    id: 23,
+    hidden:true
+  },
+  {
+    name: "Person 4",
+    phone: "123-4567",
+    id: 34,
+    hidden:true
+  },
+  {
+    name: "Person 5",
+    phone: "123-4567",
+    id: 45,
+    hidden:true
+  }
+];
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      data : [
-        {id : 1, date : "2014-04-18", total : 121.0, status : "Shipped", name : "A", points: 5, percent : 50},
-        {id : 2, date : "2014-04-21", total : 121.0, status : "Not Shipped", name : "B", points: 10, percent: 60},
-        {id : 3, date : "2014-08-09", total : 121.0, status : "Not Shipped", name : "C", points: 15, percent: 70},
-        {id : 4, date : "2014-04-24", total : 121.0, status : "Shipped", name : "D", points: 20, percent : 80},
-        {id : 5, date : "2014-04-26", total : 121.0, status : "Shipped", name : "E", points: 25, percent : 90},
-      ],
-      expandedRows : []
+      list: list
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  handleRowClick(rowId) {
-    const currentExpandedRows = this.state.expandedRows;
-    const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
-
-    const newExpandedRows = isRowCurrentlyExpanded ?
-        currentExpandedRows.filter(id => id !== rowId) :
-        currentExpandedRows.concat(rowId);
-
-    this.setState({expandedRows : newExpandedRows});
-  }
-
-  renderItem(item) {
-    const clickCallback = () => this.handleRowClick(item.id);
-    const itemRows = [
-      <tr onClick={clickCallback} key={"row-data-" + item.id}>
-        <td>{item.date}</td>
-        <td>{item.total}</td>
-        <td>{item.status}</td>
-      </tr>
-    ];
-
-    if(this.state.expandedRows.includes(item.id)) {
-      itemRows.push(
-          <tr key={"row-expanded-" + item.id}>
-            <td>{item.name}</td>
-            <td>{item.points}</td>
-            <td>{item.percent}</td>
-          </tr>
-      );
-    }
-
-    return itemRows;
+  handleClick(item) {
+    let updatedList = this.state.list.map(obj => {
+      if(obj.id === item.id) {
+        return Object.assign({}, obj, {
+          hidden:!item.hidden
+        });
+      }
+      return obj;
+    });
+    this.setState({
+      list : updatedList
+    });
   }
 
   render() {
-    let allItemRows = [];
-
-    this.state.data.forEach(item => {
-      const perItemRows = this.renderItem(item);
-      allItemRows = allItemRows.concat(perItemRows);
-    });
-
     return (
-        <table>{allItemRows}</table>
+        <div>
+          <table>
+            <tbody>
+            {this.state.list.map(item =>
+                <tr key={item.itemId}>
+                  <td>
+                    {item.name}
+                  </td>
+                  <td>
+                    {item.phone}
+                  </td>
+                  <td >
+                    <button hidden={item.hidden}> Action </button>
+                  </td>
+                  <td>
+                    <button
+                        className="delete"
+                        onClick={() => this.handleClick(item)}
+                    >
+                      Change
+                    </button>
+                  </td>
+                </tr>
+            )}
+            </tbody>
+          </table>
+        </div>
     );
   }
 }
-export default ParentComponent;
+// ReactDOM.render(<App />, document.getElementById("app"));
+export default App;
